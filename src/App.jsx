@@ -45,7 +45,7 @@ const App = () => {
         const myTasks = await contract.getMyTask();
         setTasks(myTasks);
       } catch (error) {
-        console.error("error while loading taskd:", error);
+        console.error("error while loading tasks:", error);
       }
     }
   };
