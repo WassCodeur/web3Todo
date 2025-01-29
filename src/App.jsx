@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import abi  from './abis/abi.json';
+import abi from './abis/abi.json';
 
 
 
@@ -13,20 +13,23 @@ const App = () => {
   const [taskText, setTaskText] = useState('');
   const [taskTitle, setTaskTitle] = useState('');
 
-  
+
   const connectToBlockchain = async () => {
     if (window.ethereum) {
       try {
-        
+
         await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-        const newProvider = new ethers.providers.Web3Provider(window.ethereum);
-        const newSigner = newProvider.getSigner();
-        const newContract = new ethers.Contract(contractAddress, abi, newSigner);
-
+        const newProvider = new ethers.BrowserProvider(window.ethereum);
+        const newSigner = await provider.getSigner();
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        const account = accounts[0];
+        const newContract = new ethers.Contract(contractAddress, abi, signer);
+        console.log("contract:", newContract);
         setProvider(newProvider);
         setSigner(newSigner);
         setContract(newContract);
+        
+        console.log("connected to blockchain");
       } catch (error) {
         console.error("errot:", error);
       }
@@ -35,7 +38,7 @@ const App = () => {
     }
   };
 
-  
+
   const loadTasks = async () => {
     if (contract) {
       try {
@@ -57,20 +60,20 @@ const App = () => {
         await tx.wait();
         setTaskText('');
         setTaskTitle('');
-        loadTasks(); 
+        loadTasks();
       } catch (error) {
         console.error("error while adding", error);
       }
     }
   };
 
- 
+
   const deleteTask = async (taskId) => {
     if (contract) {
       try {
         const tx = await contract.deleteTask(taskId);
         await tx.wait();
-        loadTasks(); 
+        loadTasks();
       } catch (error) {
         console.error("error while deletiing", error);
       }
