@@ -20,10 +20,10 @@ const App = () => {
 
         await window.ethereum.request({ method: 'eth_requestAccounts' });
         const newProvider = new ethers.BrowserProvider(window.ethereum);
-        const newSigner = await provider.getSigner();
+        const newSigner = await newProvider.getSigner();
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         const account = accounts[0];
-        const newContract = new ethers.Contract(contractAddress, abi, signer);
+        const newContract = new ethers.Contract(contractAddress, abi, newSigner);
         console.log("contract:", newContract);
         setProvider(newProvider);
         setSigner(newSigner);
